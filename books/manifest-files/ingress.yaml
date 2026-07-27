@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mybook-ingress
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mybook.techno028.shop
+spec:
+  ingressClassName: azure-application-gateway
+  rules:
+  - host: mybook.techno028.shop
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mybook-service
+            port:
+              number: 9090

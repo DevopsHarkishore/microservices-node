@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: videos-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: videos-app
+  template:
+    metadata:
+      labels:
+        app: videos-app
+    spec:
+      containers:
+      - name: videos-app
+        image: harkishore/videos-image:v1
+        ports:
+        - containerPort: 3000

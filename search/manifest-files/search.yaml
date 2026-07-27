@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search-app
+  template:
+    metadata:
+      labels:
+        app: search-app
+    spec:
+      containers:
+      - name: search-app
+        image: harkishore/search-image:v1
+        ports:
+        - containerPort: 3000
