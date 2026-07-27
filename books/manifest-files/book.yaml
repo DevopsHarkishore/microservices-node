@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: book-app
-        image: harkishore/book-image:v1
+        image: harkishore/book-image:v11
         ports:
         - containerPort: 3000
         env:

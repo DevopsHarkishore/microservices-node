@@ -1,37 +1,55 @@
 const fetch = require('node-fetch');
 const express = require('express');
-// ToDo: extract the common code (models) in to a npm module
+
 const Video = require('./models/video');
 const Book = require('./models/book');
+
 const app = express();
+
+app.use(express.json());
+
+// CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS'
+  );
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.get('/', (req, res) => {
   res.json({ msg: 'Search Service' });
 });
 
 app.get('/api/v1/search', async (req, res) => {
-  const videosPromise = Video.find({});
-  const booksPromise = Book.find({});
-  const promises = [videosPromise, booksPromise];
-  const [videos, books] = await Promise.all(promises);
-
-  res.json(videos.concat(books));
-});
-
-// To avoid loops we should not start a call chain longer than one: "search -> books|videos -> <no more calls>"
-app.get('/api/v1/search/depends-on', async (req, res) => {
   try {
-    const videoPromise = fetch('http://videos:3000/');
-    const bookPromise = fetch('http://books:3000/');
-    const promises = [videoPromise, bookPromise];
-    const [videoResponse, bookResponse] = await Promise.all(promises);
-    const videoJson = await videoResponse.json();
-    const bookJson = await bookResponse.json();
+    const videosPromise = Video.find({});
+    const booksPromise = Book.find({});
 
-    res.json({ video: videoJson, book: bookJson });
-  } catch (e) {
-    res.status(500).json(e);
+    const [videos, books] = await Promise.all([
+      videosPromise,
+      booksPromise,
+    ]);
+
+    res.json(videos.concat(books));
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err.message,
+    });
   }
 });
 
 module.exports = app;
+

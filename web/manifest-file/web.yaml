@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: web-app
-        image: harkishore/web-image:v1
+        image: harkishore/web-image:v11
         ports:
         - containerPort: 3000
